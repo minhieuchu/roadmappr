@@ -3,12 +3,13 @@ default: &default
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   username: postgres
   password: LuiCsf5LUikmnI7TGR
+  host: localhost
+  port: 5433
   timeout: 5000
 
 development:
   <<: *default
   database: roadmappr_development
-  port: 5433
 
 test:
   <<: *default
@@ -16,4 +17,5 @@ test:
 
 production:
   <<: *default
+  port: 5432
   database: roadmappr_production
