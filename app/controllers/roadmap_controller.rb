@@ -1,10 +1,12 @@
 class RoadmapController < ApplicationController
+  before_action :validate_params, only: [:update, :delete]
+
   def index
     render json: Roadmap.all
   end
 
   def create
-    if params[:step_ids] # Todo: validate before controller action
+    if params[:step_ids] && params[:step_ids].is_a?(Array)
       roadmap_id, *step_ids = params[:step_ids]
       array_filters, field_path =
         get_mongodb_update_params(step_ids).values_at(:array_filters, :push_or_pull_field_path)
@@ -79,6 +81,11 @@ class RoadmapController < ApplicationController
   end
 
   private
+
+  def validate_params
+    validator = RoadmapParamsValidator.new(params)
+    render json: validator.errors, status: :unprocessable_entity unless validator.valid?
+  end
 
   def get_mongodb_update_params(step_ids)
     array_filters = []
